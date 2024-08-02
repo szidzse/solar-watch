@@ -24,7 +24,7 @@ public class GeocodingService {
         if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null && response.getBody().length > 0) {
             return response.getBody()[0];
         } else {
-            throw new InvalidCityNameException("Invalid city name: " + cityName + ". Provide a valid city name!");
+            throw new InvalidCityNameException(cityName);
         }
     }
 }

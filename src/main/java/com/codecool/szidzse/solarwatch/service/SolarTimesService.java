@@ -24,7 +24,7 @@ public class SolarTimesService {
         if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null && "OK".equals(response.getBody().status())) {
             return response.getBody().results();
         } else {
-            throw new InvalidDateException("Invalid date or date format. Provide a valid date.");
+            throw new InvalidDateException(date);
         }
     }
 }
