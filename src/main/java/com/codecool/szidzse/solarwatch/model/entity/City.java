@@ -1,4 +1,4 @@
-package com.codecool.szidzse.solarwatch.model;
+package com.codecool.szidzse.solarwatch.model.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -10,16 +10,23 @@ public class City {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-
     private String name;
-
     private double longitude;
-
     private double latitude;
-
+    private String country;
     private String state;
 
-    private String country;
+    public City() {
+
+    }
+
+    public City(String name, double longitude, double latitude, String country, String state) {
+        this.name = name;
+        this.longitude = longitude;
+        this.latitude = latitude;
+        this.country = country;
+        this.state = state;
+    }
 
     public long getId() {
         return id;
