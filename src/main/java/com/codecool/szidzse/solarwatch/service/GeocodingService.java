@@ -6,16 +6,14 @@ import com.codecool.szidzse.solarwatch.model.entity.City;
 import com.codecool.szidzse.solarwatch.repository.CityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Optional;
 
 @Service
 public class GeocodingService {
-    private RestTemplate restTemplate;
+    private WebClient webClient;
 
     private CityRepository cityRepository;
 
@@ -26,8 +24,8 @@ public class GeocodingService {
     private String GEOCODING_API_KEY;
 
     @Autowired
-    public GeocodingService(RestTemplate restTemplate, CityRepository cityRepository) {
-        this.restTemplate = restTemplate;
+    public GeocodingService(WebClient webClient, CityRepository cityRepository) {
+        this.webClient = webClient;
         this.cityRepository = cityRepository;
     }
 
@@ -56,10 +54,15 @@ public class GeocodingService {
     private GeocodingAPIResponseDTO fetchCoordinatesFor(String cityName) {
         String url = String.format("%s?q=%s&appid=%s", GEOCODING_API_URL, cityName, GEOCODING_API_KEY);
 
-        ResponseEntity<GeocodingAPIResponseDTO[]> response = restTemplate.getForEntity(url, GeocodingAPIResponseDTO[].class);
+        GeocodingAPIResponseDTO[] responseArray = webClient
+                .get() // request type
+                .uri(url) // request URI
+                .retrieve() // sends the actual request
+                .bodyToMono(GeocodingAPIResponseDTO[].class) // parses the response
+                .block(); // waits for the response
 
-        if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null && response.getBody().length > 0) {
-            return response.getBody()[0];
+        if (responseArray != null && responseArray.length > 0) {
+            return responseArray[0];
         } else {
             throw new InvalidCityNameException(cityName);
         }
