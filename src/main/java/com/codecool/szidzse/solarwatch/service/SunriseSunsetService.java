@@ -1,39 +1,40 @@
 package com.codecool.szidzse.solarwatch.service;
 
 import com.codecool.szidzse.solarwatch.exception.InvalidDateException;
-import com.codecool.szidzse.solarwatch.model.SolarTimes;
-import com.codecool.szidzse.solarwatch.model.SolarTimesResponse;
+import com.codecool.szidzse.solarwatch.model.DTO.SolarTimes;
+import com.codecool.szidzse.solarwatch.model.DTO.SunriseSunsetAPIResponseDTO;
 import com.codecool.szidzse.solarwatch.repository.SunriseSunsetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Service
-public class SolarTimesService {
+public class SunriseSunsetService {
     private final WebClient webClient;
 
-    private SunriseSunsetRepository sunriseSunsetTimeRepository;
+    private final SunriseSunsetRepository sunriseSunsetRepository;
 
     @Value("${sunrise-sunset.api.url}")
     private String SUNRISE_SUNSET_API_URL;
 
     @Autowired
-    public SolarTimesService(WebClient webClient, SunriseSunsetRepository sunriseSunsetTimeRepository) {
+    public SunriseSunsetService(WebClient webClient, SunriseSunsetRepository sunriseSunsetTimeRepository) {
         this.webClient = webClient;
-        this.sunriseSunsetTimeRepository = sunriseSunsetTimeRepository;
+        this.sunriseSunsetRepository = sunriseSunsetTimeRepository;
     }
 
-    public SolarTimes getSolarTimes(double lat, double lng, LocalDate date) {
+    public SolarTimes getSolarTimes(BigDecimal lat, BigDecimal lng, LocalDate date) {
         String url = String.format("%s?lat=%s&lng=%s&date=%s", SUNRISE_SUNSET_API_URL, lat, lng, date);
 
-        SolarTimesResponse response = webClient
+        SunriseSunsetAPIResponseDTO response = webClient
                 .get() // request type
                 .uri(url) // request URI
                 .retrieve() // sends the actual request
-                .bodyToMono(SolarTimesResponse.class) // parses the response
+                .bodyToMono(SunriseSunsetAPIResponseDTO.class) // parses the response
                 .block(); // waits for the response
 
         if (response != null && "OK".equals(response.status())) {
