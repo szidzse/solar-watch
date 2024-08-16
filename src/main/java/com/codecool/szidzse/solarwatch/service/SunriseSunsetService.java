@@ -3,6 +3,7 @@ package com.codecool.szidzse.solarwatch.service;
 import com.codecool.szidzse.solarwatch.exception.InvalidDateException;
 import com.codecool.szidzse.solarwatch.model.DTO.SolarTimes;
 import com.codecool.szidzse.solarwatch.model.DTO.SunriseSunsetAPIResponseDTO;
+import com.codecool.szidzse.solarwatch.model.DTO.SunriseSunsetDTO;
 import com.codecool.szidzse.solarwatch.model.entity.City;
 import com.codecool.szidzse.solarwatch.model.entity.SunriseSunset;
 import com.codecool.szidzse.solarwatch.repository.SunriseSunsetRepository;
@@ -15,10 +16,14 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class SunriseSunsetService {
     private final WebClient webClient;
+
+    private final GeocodingService geocodingService;
 
     private final SunriseSunsetRepository sunriseSunsetRepository;
 
@@ -26,9 +31,37 @@ public class SunriseSunsetService {
     private String SUNRISE_SUNSET_API_URL;
 
     @Autowired
-    public SunriseSunsetService(WebClient webClient, SunriseSunsetRepository sunriseSunsetTimeRepository) {
+    public SunriseSunsetService(WebClient webClient, GeocodingService geocodingService, SunriseSunsetRepository sunriseSunsetRepository) {
         this.webClient = webClient;
-        this.sunriseSunsetRepository = sunriseSunsetTimeRepository;
+        this.geocodingService = geocodingService;
+        this.sunriseSunsetRepository = sunriseSunsetRepository;
+    }
+
+    public List<SunriseSunset> findAll() {
+        return sunriseSunsetRepository.findAll();
+    }
+
+    public Optional<SunriseSunset> findById(Long id) {
+        return sunriseSunsetRepository.findById(id);
+    }
+
+    public SunriseSunset save(SunriseSunset sunriseSunset) {
+        return sunriseSunsetRepository.save(sunriseSunset);
+    }
+
+    public void deleteById(Long id) {
+        sunriseSunsetRepository.deleteById(id);
+    }
+
+    public SunriseSunsetDTO getSunriseSunset(String cityName, LocalDate date) {
+        City city = geocodingService.getCoordinatesFor(cityName);
+        BigDecimal latitude = city.getLatitude();
+        BigDecimal longitude = city.getLongitude();
+        SolarTimes solarTimes = getSolarTimes(latitude, longitude, date);
+
+        createAndSaveSunriseSunset(city, date, solarTimes);
+
+        return new SunriseSunsetDTO(solarTimes.sunrise(), solarTimes.sunset());
     }
 
     public SolarTimes getSolarTimes(BigDecimal lat, BigDecimal lng, LocalDate date) {

@@ -5,6 +5,7 @@ import com.codecool.szidzse.solarwatch.security.service.UserDetailsServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -30,9 +31,15 @@ public class SecurityConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
-                        req -> req.requestMatchers("/login/**", "/register/**")
-                                .permitAll()
-                                .requestMatchers("/admin_only/**").hasAuthority("ADMIN")
+                        req -> req.requestMatchers("/login/**", "/register/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/cities/**").hasAnyAuthority("USER", "ADMIN")
+                                .requestMatchers(HttpMethod.POST, "/api/cities/**").hasAuthority("ADMIN")
+                                .requestMatchers(HttpMethod.PUT, "/api/cities/**").hasAuthority("ADMIN")
+                                .requestMatchers(HttpMethod.DELETE, "/api/cities/**").hasAuthority("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/api/sunrise-sunset/any").hasAnyAuthority("USER", "ADMIN")
+                                .requestMatchers(HttpMethod.POST, "/api/sunrise-sunset/**").hasAuthority("ADMIN")
+                                .requestMatchers(HttpMethod.PUT, "/api/sunrise-sunset/**").hasAuthority("ADMIN")
+                                .requestMatchers(HttpMethod.DELETE, "/api/sunrise-sunset/**").hasAuthority("ADMIN")
                                 .anyRequest()
                                 .authenticated()
                 ).userDetailsService(userDetailsServiceImpl)

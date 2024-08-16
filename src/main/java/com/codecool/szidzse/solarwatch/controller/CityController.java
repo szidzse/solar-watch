@@ -15,7 +15,7 @@ public class CityController {
 
     private final CityService cityService;
 
-    @GetMapping
+    @GetMapping(path = "")
     public List<City> getAllCities() {
         return cityService.findAll();
     }
