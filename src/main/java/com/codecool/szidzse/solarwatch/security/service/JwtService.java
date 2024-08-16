@@ -15,6 +15,7 @@ import java.util.function.Function;
 
 @Service
 public class JwtService {
+    // It contains a 256-bit Encryption key.
     @Value("${SECRET-KEY}")
     private String secretKey;
 
