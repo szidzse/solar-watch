@@ -3,6 +3,8 @@ package com.codecool.szidzse.solarwatch.service;
 import com.codecool.szidzse.solarwatch.exception.InvalidDateException;
 import com.codecool.szidzse.solarwatch.model.DTO.SolarTimes;
 import com.codecool.szidzse.solarwatch.model.DTO.SunriseSunsetAPIResponseDTO;
+import com.codecool.szidzse.solarwatch.model.entity.City;
+import com.codecool.szidzse.solarwatch.model.entity.SunriseSunset;
 import com.codecool.szidzse.solarwatch.repository.SunriseSunsetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,6 +13,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 @Service
 public class SunriseSunsetService {
@@ -42,5 +46,20 @@ public class SunriseSunsetService {
         } else {
             throw new InvalidDateException(date);
         }
+    }
+
+    public void createAndSaveSunriseSunset(City city, LocalDate date, SolarTimes solarTimes) {
+        SunriseSunset sunriseSunset = new SunriseSunset();
+        sunriseSunset.setCity(city);
+        sunriseSunset.setDate(date);
+        sunriseSunset.setSunrise(convertToLocalTime(solarTimes.sunrise()));
+        sunriseSunset.setSunset(convertToLocalTime(solarTimes.sunset()));
+
+        sunriseSunsetRepository.save(sunriseSunset);
+    }
+
+    private LocalTime convertToLocalTime(String timeStr) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:mm:ss a");
+        return LocalTime.parse(timeStr, formatter);
     }
 }
