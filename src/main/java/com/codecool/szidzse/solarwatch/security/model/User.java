@@ -1,4 +1,4 @@
-package com.codecool.szidzse.solarwatch.model.entity;
+package com.codecool.szidzse.solarwatch.security.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
