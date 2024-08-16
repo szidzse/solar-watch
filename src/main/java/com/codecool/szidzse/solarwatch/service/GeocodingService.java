@@ -13,9 +13,9 @@ import java.util.Optional;
 
 @Service
 public class GeocodingService {
-    private WebClient webClient;
+    private final WebClient webClient;
 
-    private CityRepository cityRepository;
+    private final CityRepository cityRepository;
 
     @Value("${geocoding.api.url}")
     private String GEOCODING_API_URL;
@@ -30,24 +30,13 @@ public class GeocodingService {
     }
 
     public City getCoordinatesFor(String cityName) {
-        Optional<City> city = cityRepository.findByNameIgnoreCase(cityName);
-
-        if (city.isEmpty()) {
-
-            GeocodingAPIResponseDTO responseDTO = fetchCoordinatesFor(cityName);
-
-            City fetchedCity = new City(
-                    responseDTO.name(),
-                    responseDTO.lat(),
-                    responseDTO.lon(),
-                    responseDTO.country(),
-                    responseDTO.state()
-            );
-
-            return cityRepository.save(fetchedCity);
-        }
-
-        return city.get();
+        return cityRepository.findByNameIgnoreCase(cityName)
+                .orElseGet(() -> {
+                    GeocodingAPIResponseDTO responseDTO = fetchCoordinatesFor(cityName);
+                    City fetchedCity = new City(null, responseDTO.name(), responseDTO.state(),
+                            responseDTO.country(), responseDTO.lon(), responseDTO.lat());
+                    return cityRepository.save(fetchedCity);
+                });
     }
 
 

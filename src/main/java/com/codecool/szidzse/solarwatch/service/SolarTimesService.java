@@ -3,7 +3,7 @@ package com.codecool.szidzse.solarwatch.service;
 import com.codecool.szidzse.solarwatch.exception.InvalidDateException;
 import com.codecool.szidzse.solarwatch.model.SolarTimes;
 import com.codecool.szidzse.solarwatch.model.SolarTimesResponse;
-import com.codecool.szidzse.solarwatch.repository.SunriseSunsetTimeRepository;
+import com.codecool.szidzse.solarwatch.repository.SunriseSunsetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -15,13 +15,13 @@ import java.time.LocalDate;
 public class SolarTimesService {
     private final WebClient webClient;
 
-    private SunriseSunsetTimeRepository sunriseSunsetTimeRepository;
+    private SunriseSunsetRepository sunriseSunsetTimeRepository;
 
     @Value("${sunrise-sunset.api.url}")
     private String SUNRISE_SUNSET_API_URL;
 
     @Autowired
-    public SolarTimesService(WebClient webClient, SunriseSunsetTimeRepository sunriseSunsetTimeRepository) {
+    public SolarTimesService(WebClient webClient, SunriseSunsetRepository sunriseSunsetTimeRepository) {
         this.webClient = webClient;
         this.sunriseSunsetTimeRepository = sunriseSunsetTimeRepository;
     }

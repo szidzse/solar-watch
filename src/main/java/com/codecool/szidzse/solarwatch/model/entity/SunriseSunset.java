@@ -6,33 +6,30 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-public class City {
+public class SunriseSunset {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "name")
-    private String name;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private City city;
 
-    @Column(name = "state", nullable = true)
-    private String state;
+    @Column(name = "date")
+    private LocalDate date;
 
-    @Column(name = "country")
-    private String country;
+    @Column(name = "sunrise")
+    private LocalTime sunrise;
 
-    @Column(name = "longitude")
-    private BigDecimal longitude;
-
-    @Column(name = "latitude")
-    private BigDecimal latitude;
-
+    @Column(name = "sunset")
+    private LocalTime sunset;
 
 }
