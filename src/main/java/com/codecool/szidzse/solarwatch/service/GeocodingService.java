@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 @Service
@@ -33,8 +34,15 @@ public class GeocodingService {
         return cityRepository.findByNameIgnoreCase(cityName)
                 .orElseGet(() -> {
                     GeocodingAPIResponseDTO responseDTO = fetchCoordinatesFor(cityName);
-                    City fetchedCity = new City(null, responseDTO.name(), responseDTO.state(),
-                            responseDTO.country(), responseDTO.lon(), responseDTO.lat());
+                    City fetchedCity = new City(
+                            null,
+                            responseDTO.name(),
+                            responseDTO.state(),
+                            responseDTO.country(),
+                            responseDTO.lon(),
+                            responseDTO.lat(),
+                            new ArrayList<>()
+                    );
                     return cityRepository.save(fetchedCity);
                 });
     }

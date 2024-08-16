@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -34,5 +36,16 @@ public class City {
     @Column(name = "latitude")
     private BigDecimal latitude;
 
+    @OneToMany(mappedBy = "city", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<SunriseSunset> sunriseSunsetList = new ArrayList<>();
 
+    public void addSunriseSunset(SunriseSunset sunriseSunset) {
+        sunriseSunsetList.add(sunriseSunset);
+        sunriseSunset.setCity(this);
+    }
+
+    public void removeSunriseSunset(SunriseSunset sunriseSunset) {
+        sunriseSunsetList.remove(sunriseSunset);
+        sunriseSunset.setCity(null);
+    }
 }

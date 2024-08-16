@@ -21,6 +21,7 @@ public class SunriseSunset {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "city_id")
     private City city;
 
     @Column(name = "date")
