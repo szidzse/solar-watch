@@ -2,19 +2,21 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router';
 import styled from 'styled-components'
 
-const Container = styled.div`
+const FormContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 2rem;
-  max-width: 500px; /* Korlátozza a szélességet */
-  margin: 0 auto; /* Középre igazítás */
+  max-width: 500px;
+  margin: 0 auto;
+  background-color: #f9f9f9;
+  border-radius: 8px;
 `;
 
 const Label = styled.label`
   display: flex;
   flex-direction: column;
-  align-items: flex-start; /* A label és az input igazítása balra */
+  align-items: flex-start;
   margin-bottom: 1rem;
   width: 100%;
 `;
@@ -23,7 +25,7 @@ const Input = styled.input`
   padding: 0.75rem;
   width: 100%;
   box-sizing: border-box;
-  margin-top: 0.5rem; /* Távolság a label és az input között */
+  margin-top: 0.5rem;
   border: 1px solid #ccc;
   border-radius: 4px;
 `;
@@ -87,7 +89,7 @@ const SolarTimesPage = () => {
   };
 
   return (
-    <Container>
+    <FormContainer>
       <h2>Get Solar Times</h2>
       <Label>
         City Name:
@@ -119,7 +121,7 @@ const SolarTimesPage = () => {
           )}
         </ResponseContainer>
       )}
-    </Container>
+    </FormContainer>
   )
 }
 
