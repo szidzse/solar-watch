@@ -1,12 +1,37 @@
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import styled from 'styled-components';
 import { formatLocalDateTime } from '../util/UtilMethods';
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  max-width: 1000px;
+  margin: 0 auto;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+`;
+
+const Button = styled.button`
+  padding: 0.75rem 1.5rem;
+  margin-bottom: 1.5rem;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+
+  &:hover {
+    background-color: #45a049;
+  }
+`;
 
 const Table = styled.table`
   width: 100%;
   border-collapse: collapse;
-  margin: 2rem 0;
   font-size: 1rem;
   text-align: left;
 `;
@@ -19,6 +44,7 @@ const TableHeader = styled.th`
 
 const TableRow = styled.tr`
   border: 1px solid #ddd;
+
   &:nth-child(even) {
     background-color: #f9f9f9;
   }
@@ -32,6 +58,7 @@ const TableCell = styled.td`
 const SunriseSunsetPage = () => {
   const { id } = useParams();
   const [sunriseSunsetInfos, setSunriseSunsetInfos] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchSunriseSunsetInfos = async () => {
@@ -61,7 +88,8 @@ const SunriseSunsetPage = () => {
   }, [id]);
 
   return (
-    <div>
+    <Container>
+      <Button onClick={() => navigate('/cities')}>Back to Cities</Button>
       <h2>Sunrise and Sunset Times</h2>
       <Table>
         <thead>
@@ -81,7 +109,7 @@ const SunriseSunsetPage = () => {
           ))}
         </tbody>
       </Table>
-    </div>
+    </Container>
   );
 }
 

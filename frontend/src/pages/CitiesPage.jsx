@@ -2,6 +2,17 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  max-width: 1000px;
+  margin: 0 auto;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+`;
+
 const Table = styled.table`
   width: 100%;
   border-collapse: collapse;
@@ -29,7 +40,7 @@ const TableCell = styled.td`
 `;
 
 const Button = styled.button`
-  padding: 0.5rem;
+  padding: 0.5rem 1rem;
   margin: 0.25rem;
   background-color: #4CAF50;
   color: white;
@@ -39,6 +50,14 @@ const Button = styled.button`
 
   &:hover {
     background-color: #45a049;
+  }
+`;
+
+const BackButton = styled(Button)`
+  background-color: #007BFF;
+
+  &:hover {
+    background-color: #0056b3;
   }
 `;
 
@@ -100,7 +119,8 @@ const CitiesPage = () => {
   };
 
   return (
-    <div>
+    <Container>
+      <Button onClick={() => navigate('/')}>Back to Home</Button>
       <h2>Cities</h2>
       <Table>
         <thead>
@@ -126,7 +146,7 @@ const CitiesPage = () => {
           ))}
         </tbody>
       </Table>
-    </div>
+    </Container>
   );
 }
 
