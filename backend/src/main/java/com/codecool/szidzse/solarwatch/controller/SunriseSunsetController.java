@@ -9,7 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/sunrise-sunset")
@@ -23,6 +25,15 @@ public class SunriseSunsetController {
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
     ) {
         return sunriseSunsetService.getSunriseSunset(cityName, date);
+    }
+
+    @GetMapping("/{cityId}/sunrise-sunsets")
+    public ResponseEntity<List<SunriseSunsetDTO>> getSunriseSunsetByCityId(@PathVariable Long cityId) {
+        List<SunriseSunset> sunriseSunsets = sunriseSunsetService.findAllByCityId(cityId);
+        List<SunriseSunsetDTO> sunriseSunsetDTOs = sunriseSunsets.stream()
+                .map(this::convertToSunriseSunsetDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(sunriseSunsetDTOs);
     }
 
     @GetMapping(path = "")
@@ -46,5 +57,15 @@ public class SunriseSunsetController {
     public ResponseEntity<Void> deleteSunriseSunset(@PathVariable Long id) {
         sunriseSunsetService.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    private SunriseSunsetDTO convertToSunriseSunsetDTO(SunriseSunset sunriseSunset) {
+        SunriseSunsetDTO dto = new SunriseSunsetDTO();
+        dto.setId(sunriseSunset.getId());
+        dto.setSunrise(LocalDateTime.of(sunriseSunset.getDate(), sunriseSunset.getSunrise()));
+        dto.setSunset(LocalDateTime.of(sunriseSunset.getDate(), sunriseSunset.getSunset()));
+        dto.setDate(sunriseSunset.getDate());
+        dto.setCityId(sunriseSunset.getCity().getId());
+        return dto;
     }
 }

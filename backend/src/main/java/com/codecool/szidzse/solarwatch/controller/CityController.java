@@ -1,5 +1,6 @@
 package com.codecool.szidzse.solarwatch.controller;
 
+import com.codecool.szidzse.solarwatch.model.DTO.CityDTO;
 import com.codecool.szidzse.solarwatch.model.entity.City;
 import com.codecool.szidzse.solarwatch.service.CityService;
 import lombok.AllArgsConstructor;
@@ -16,14 +17,16 @@ public class CityController {
     private final CityService cityService;
 
     @GetMapping(path = "")
-    public List<City> getAllCities() {
-        return cityService.findAll();
+    public ResponseEntity<List<CityDTO>> getAllCities() {
+        List<City> cities = cityService.findAll();
+        List<CityDTO> cityDTOs =  cities.stream().map(this::convertToDTO).toList();
+        return ResponseEntity.ok(cityDTOs);
     }
 
     @GetMapping(path = "/{id}")
-    public ResponseEntity<City> getCityById(@PathVariable Long id) {
+    public ResponseEntity<CityDTO> getCityById(@PathVariable Long id) {
         return cityService.findById(id)
-                .map(ResponseEntity::ok)
+                .map(city -> ResponseEntity.ok(convertToDTO(city)))
                 .orElse(ResponseEntity.notFound().build());
     }
 
@@ -41,5 +44,16 @@ public class CityController {
     public ResponseEntity<Void> deleteCity(@PathVariable Long id) {
         cityService.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    private CityDTO convertToDTO(City city) {
+        CityDTO dto = new CityDTO();
+        dto.setId(city.getId());
+        dto.setName(city.getName());
+        dto.setState(city.getState());
+        dto.setCountry(city.getCountry());
+        dto.setLongitude(city.getLongitude());
+        dto.setLatitude(city.getLatitude());
+        return dto;
     }
 }

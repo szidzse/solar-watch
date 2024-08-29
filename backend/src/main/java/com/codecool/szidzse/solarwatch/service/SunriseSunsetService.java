@@ -14,6 +14,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -41,6 +42,10 @@ public class SunriseSunsetService {
         return sunriseSunsetRepository.findAll();
     }
 
+    public List<SunriseSunset> findAllByCityId(Long cityId) {
+        return sunriseSunsetRepository.findAllByCityId(cityId);
+    }
+
     public Optional<SunriseSunset> findById(Long id) {
         return sunriseSunsetRepository.findById(id);
     }
@@ -59,9 +64,16 @@ public class SunriseSunsetService {
         BigDecimal longitude = city.getLongitude();
         SolarTimes solarTimes = getSolarTimes(latitude, longitude, date);
 
-        createAndSaveSunriseSunset(city, date, solarTimes);
+        SunriseSunset savedSunriseSunset = createAndSaveSunriseSunset(city, date, solarTimes);
 
-        return new SunriseSunsetDTO(solarTimes.sunrise(), solarTimes.sunset());
+        SunriseSunsetDTO sunriseSunsetDTO = new SunriseSunsetDTO();
+        sunriseSunsetDTO.setId(savedSunriseSunset.getId());
+        sunriseSunsetDTO.setSunrise(LocalDateTime.of(savedSunriseSunset.getDate(), savedSunriseSunset.getSunrise()));
+        sunriseSunsetDTO.setSunset(LocalDateTime.of(savedSunriseSunset.getDate(), savedSunriseSunset.getSunset()));
+        sunriseSunsetDTO.setDate(savedSunriseSunset.getDate());
+        sunriseSunsetDTO.setCityId(city.getId());
+
+        return sunriseSunsetDTO;
     }
 
     public SolarTimes getSolarTimes(BigDecimal lat, BigDecimal lng, LocalDate date) {
@@ -81,14 +93,14 @@ public class SunriseSunsetService {
         }
     }
 
-    public void createAndSaveSunriseSunset(City city, LocalDate date, SolarTimes solarTimes) {
+    public SunriseSunset createAndSaveSunriseSunset(City city, LocalDate date, SolarTimes solarTimes) {
         SunriseSunset sunriseSunset = new SunriseSunset();
         sunriseSunset.setCity(city);
         sunriseSunset.setDate(date);
         sunriseSunset.setSunrise(convertToLocalTime(solarTimes.sunrise()));
         sunriseSunset.setSunset(convertToLocalTime(solarTimes.sunset()));
 
-        sunriseSunsetRepository.save(sunriseSunset);
+        return sunriseSunsetRepository.save(sunriseSunset);
     }
 
     private LocalTime convertToLocalTime(String timeStr) {
