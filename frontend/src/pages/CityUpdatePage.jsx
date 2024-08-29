@@ -39,16 +39,32 @@ const Button = styled.button`
   }
 `;
 
-const CityUpdatePAge = () => {
-    const { id } = useParams();
+const CityUpdatePage = () => {
+  const { id } = useParams();
   const [city, setCity] = useState({ name: '', state: '', country: '' });
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCity = async () => {
-      const response = await fetch(`/api/cities/${id}`);
-      const data = await response.json();
-      setCity(data);
+      const token = localStorage.getItem("token");
+
+      try {
+        const response = await fetch(`/api/cities/${id}`, {
+          headers: {
+            "Authorization": `Bearer ${token}`
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch city data.');
+        }
+
+        const data = await response.json();
+        setCity(data);
+
+      } catch(error) {
+        console.error("Error fetching city: ", error)
+      }
     };
     fetchCity();
   }, [id]);
@@ -60,14 +76,27 @@ const CityUpdatePAge = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await fetch(`/api/cities/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(city),
-    });
-    navigate('/cities');
+    const token = localStorage.getItem("token");
+
+    try {
+      const response = await fetch(`/api/cities/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(city),
+      });
+
+      if(!response.ok) {
+        throw new Error("Failed to update city.")
+      }
+      navigate('/cities');
+
+    } catch(error) {
+      console.error("Error updating city: ", error);
+    }
+
   };
 
   return (
@@ -101,4 +130,4 @@ const CityUpdatePAge = () => {
   );
 }
 
-export default CityUpdatePAge
+export default CityUpdatePage

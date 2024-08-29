@@ -4,7 +4,7 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import SolarTimesPage from './pages/SolarTimesPage';
 import CitiesPage from './pages/CitiesPage';
-import CityUpdatePAge from './pages/CityUpdatePAge';
+import CityUpdatePAge from './pages/CityUpdatePage';
 import SunriseSunsetPage from './pages/SunriseSunsetPage';
 
 const App = () => {
