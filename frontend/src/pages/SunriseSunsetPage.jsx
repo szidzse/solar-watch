@@ -62,7 +62,7 @@ const SunriseSunsetPage = () => {
 
   useEffect(() => {
     const fetchSunriseSunsetInfos = async () => {
-      const token = localStorage.getItem("token")
+      const token = sessionStorage.getItem("token")
 
       try {
         const response = await fetch(`/api/sunrise-sunset/${id}/sunrise-sunsets`, {

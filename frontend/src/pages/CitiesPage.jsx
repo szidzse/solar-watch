@@ -67,7 +67,7 @@ const CitiesPage = () => {
 
   useEffect(() => {
     const fetchCities = async () => {
-      const token = localStorage.getItem("token")
+      const token = sessionStorage.getItem("token")
       
       try {
         const response = await fetch('/api/cities', {
@@ -98,7 +98,7 @@ const CitiesPage = () => {
   };
 
   const handleDelete = async (id) => {
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
 
     try {
         await fetch(`/api/cities/${id}`, {
@@ -115,12 +115,13 @@ const CitiesPage = () => {
   };
 
   const handleSeeSunriseSunset = (id) => {
-    navigate(`/cities/${id}/sunrise-sunset`);
+    navigate(`/cities/${id}/sunrise-sunsets`);
   };
 
   return (
     <Container>
-      <Button onClick={() => navigate('/')}>Back to Home</Button>
+      <Button onClick={() => navigate('/')}>Home</Button>
+      <Button onClick={() => navigate('/solar-watch')}>Get New Solar Times</Button>
       <h2>Cities</h2>
       <Table>
         <thead>

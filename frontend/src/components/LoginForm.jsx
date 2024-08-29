@@ -70,7 +70,7 @@ const LoginForm = () => {
     
         if (response.ok) {
           const data = await response.json();
-          localStorage.setItem("token", data.jwt);
+          sessionStorage.setItem("token", data.jwt);
           navigate("/solar-watch");
         } else {
           alert("Login failed!");

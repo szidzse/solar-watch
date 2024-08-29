@@ -46,7 +46,7 @@ const CityUpdatePage = () => {
 
   useEffect(() => {
     const fetchCity = async () => {
-      const token = localStorage.getItem("token");
+      const token = sessionStorage.getItem("token");
 
       try {
         const response = await fetch(`/api/cities/${id}`, {
@@ -76,7 +76,7 @@ const CityUpdatePage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
 
     try {
       const response = await fetch(`/api/cities/${id}`, {
@@ -101,6 +101,7 @@ const CityUpdatePage = () => {
 
   return (
     <Container>
+      <Button onClick={() => navigate('/cities')}>Back to Cities</Button>
       <h2>Update City</h2>
       <form onSubmit={handleSubmit}>
         <Label>City Name</Label>

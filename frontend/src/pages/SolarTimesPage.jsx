@@ -32,14 +32,13 @@ const Input = styled.input`
 `;
 
 const Button = styled.button`
-  padding: 0.75rem;
-  width: 100%;
+  padding: 0.5rem 1rem;
+  margin: 0.25rem;
   background-color: #4CAF50;
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  margin-top: 1rem;
 
   &:hover {
     background-color: #45a049;
@@ -63,14 +62,14 @@ const SolarTimesPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
     if(!token) {
       navigate("/login")
     }
   }, [navigate])
 
   const handleFetch = async () => {
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
 
     try {
       const res = await fetch(`/api/sunrise-sunset/any?cityName=${cityName}&date=${date}`, {
@@ -92,6 +91,8 @@ const SolarTimesPage = () => {
 
   return (
     <FormContainer>
+      <Button onClick={() => navigate('/')}>Home</Button>
+      <Button onClick={() => navigate('/cities')}>See Cities</Button>
       <h2>Get Solar Times</h2>
       <Label>
         City Name:
