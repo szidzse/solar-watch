@@ -54,6 +54,20 @@ const ResponseContainer = styled.div`
   background-color: #f9f9f9;
 `;
 
+function formatLocalDateTime(localDateTime) {
+  const date = new Date(localDateTime);
+  if (isNaN(date.getTime())) {
+      throw new Error("Invalid date format");
+  }
+
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  const seconds = String(date.getSeconds()).padStart(2, '0');
+
+  return `${hours}:${minutes}:${seconds}`;
+}
+
+
 const SolarTimesPage = () => {
   const [cityName, setCityName] = useState("");
   const [date, setDate] = useState("");
@@ -115,8 +129,8 @@ const SolarTimesPage = () => {
             <p>{response.error}</p>
           ) : (
             <div>
-              <p><strong>Sunrise:</strong> {response.sunrise}</p>
-              <p><strong>Sunset:</strong> {response.sunset}</p>
+              <p><strong>Sunrise:</strong> {formatLocalDateTime(response.sunrise)}</p>
+              <p><strong>Sunset:</strong> {formatLocalDateTime(response.sunset)}</p>
             </div>
           )}
         </ResponseContainer>
