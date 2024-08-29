@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router';
 import styled from 'styled-components';
+import { formatLocalDateTime } from '../util/UtilMethods';
 
 const Table = styled.table`
   width: 100%;
@@ -29,14 +30,32 @@ const TableCell = styled.td`
 `;
 
 const SunriseSunsetPage = () => {
-    const { id } = useParams();
+  const { id } = useParams();
   const [sunriseSunsetInfos, setSunriseSunsetInfos] = useState([]);
 
   useEffect(() => {
     const fetchSunriseSunsetInfos = async () => {
-      const response = await fetch(`/api/sunrise-sunset/any?cityName=${id}`);
-      const data = await response.json();
-      setSunriseSunsetInfos(data);
+      const token = localStorage.getItem("token")
+
+      try {
+        const response = await fetch(`/api/sunrise-sunset/${id}/sunrise-sunsets`, {
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        setSunriseSunsetInfos(data);
+
+      } catch(error) {
+        console.error("Error fetching sunrise and sunset times by city id: ", error)
+      }
+
+      
     };
     fetchSunriseSunsetInfos();
   }, [id]);
@@ -53,10 +72,11 @@ const SunriseSunsetPage = () => {
           </tr>
         </thead>
         <tbody>
-          {sunriseSunsetInfos.map((info, index) => (
+          {sunriseSunsetInfos.map((sunriseSunsetInfo, index) => (
             <TableRow key={index}>
-              <TableCell>{info.sunrise}</TableCell>
-              <TableCell>{info.sunset}</TableCell>
+              <TableCell>{sunriseSunsetInfo.date}</TableCell>
+              <TableCell>{formatLocalDateTime(sunriseSunsetInfo.sunrise)}</TableCell>
+              <TableCell>{formatLocalDateTime(sunriseSunsetInfo.sunset)}</TableCell>
             </TableRow>
           ))}
         </tbody>

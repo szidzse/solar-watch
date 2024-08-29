@@ -16,7 +16,7 @@ const App = () => {
         <Route path="/solar-watch" element={<SolarTimesPage />} />
         <Route path="/cities" element={<CitiesPage />} />
         <Route path="/cities/:id/edit" element={<CityUpdatePAge />} />
-        <Route path="/cities/:id/sunrise-sunset" element={<SunriseSunsetPage />} />
+        <Route path="/cities/:id/sunrise-sunsets" element={<SunriseSunsetPage />} />
       </Routes>
     </BrowserRouter>
   )

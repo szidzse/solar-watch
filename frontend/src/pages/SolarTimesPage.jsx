@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router';
 import styled from 'styled-components'
+import { formatLocalDateTime } from '../util/UtilMethods';
 
 const FormContainer = styled.div`
   display: flex;
@@ -53,19 +54,6 @@ const ResponseContainer = styled.div`
   width: 100%;
   background-color: #f9f9f9;
 `;
-
-function formatLocalDateTime(localDateTime) {
-  const date = new Date(localDateTime);
-  if (isNaN(date.getTime())) {
-      throw new Error("Invalid date format");
-  }
-
-  const hours = String(date.getHours()).padStart(2, '0');
-  const minutes = String(date.getMinutes()).padStart(2, '0');
-  const seconds = String(date.getSeconds()).padStart(2, '0');
-
-  return `${hours}:${minutes}:${seconds}`;
-}
 
 
 const SolarTimesPage = () => {
