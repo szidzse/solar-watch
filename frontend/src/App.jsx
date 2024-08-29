@@ -6,11 +6,13 @@ import SolarTimesPage from './pages/SolarTimesPage';
 import CitiesPage from './pages/CitiesPage';
 import CityUpdatePAge from './pages/CityUpdatePage';
 import SunriseSunsetPage from './pages/SunriseSunsetPage';
+import MainPage from './pages/MainPage';
 
 const App = () => {
   return (
     <BrowserRouter>
         <Routes>
+        <Route path="/" element={<MainPage />} />
         <Route path="/registration" element={<RegisterPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/solar-watch" element={<SolarTimesPage />} />
