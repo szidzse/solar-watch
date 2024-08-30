@@ -119,4 +119,18 @@ public class MemberControllerIT {
                 .andExpect(jsonPath("$.username").value("janedoe@example.com"))
                 .andExpect(jsonPath("$.roles").isArray());
     }
+
+    @Test
+    void testLogin_InvalidCredentials() throws Exception {
+        LoginRequest loginRequest = new LoginRequest(
+                "JaneDoe@example.com",
+                "password"
+        );
+
+        ResultActions response = mockMvc.perform(post("/api/member/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(loginRequest)));
+
+        response.andExpect(status().isUnauthorized());
+    }
 }
