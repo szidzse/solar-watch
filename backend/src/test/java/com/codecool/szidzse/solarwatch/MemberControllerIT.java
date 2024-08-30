@@ -5,12 +5,12 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.codecool.szidzse.solarwatch.model.entity.Member;
 import com.codecool.szidzse.solarwatch.model.entity.Role;
 import com.codecool.szidzse.solarwatch.model.entity.RoleType;
+import com.codecool.szidzse.solarwatch.model.payload.LoginRequest;
 import com.codecool.szidzse.solarwatch.model.payload.RegisterRequest;
 import com.codecool.szidzse.solarwatch.repository.MemberRepository;
 import com.codecool.szidzse.solarwatch.repository.RoleRepository;
@@ -96,11 +96,27 @@ public class MemberControllerIT {
         );
 
 
-        ResultActions response = mockMvc
-                .perform(post("/api/member/register")
+        ResultActions response = mockMvc.perform(post("/api/member/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(registerRequest)));
 
         response.andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void testLogin_Success() throws Exception {
+        LoginRequest loginRequest = new LoginRequest(
+                "janedoe@example.com",
+                "password"
+        );
+
+        ResultActions response = mockMvc.perform(post("/api/member/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(loginRequest)));
+
+        response.andExpect(status().isOk())
+                .andExpect(jsonPath("$.jwt").exists())
+                .andExpect(jsonPath("$.username").value("janedoe@example.com"))
+                .andExpect(jsonPath("$.roles").isArray());
     }
 }
