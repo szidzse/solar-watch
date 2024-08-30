@@ -27,6 +27,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
+import java.util.Set;
+
 @SpringBootTest
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
@@ -49,6 +51,24 @@ public class MemberControllerIT {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @BeforeEach
+    void setUp() throws Exception {
+        memberRepository.deleteAll();
+        roleRepository.deleteAll();
+
+        Role role = new Role(RoleType.ROLE_USER);
+        roleRepository.save(role);
+
+        Member member = new Member(
+                "Jane",
+                "Doe",
+                "janedoe@example.com",
+                passwordEncoder.encode("password")
+        );
+        member.setRoles(Set.of(role));
+        memberRepository.save(member);
+    }
+
     @Test
     void testRegisterUser_Success() throws Exception {
         RegisterRequest registerRequest = new RegisterRequest(
@@ -64,5 +84,23 @@ public class MemberControllerIT {
                 .content(objectMapper.writeValueAsString(registerRequest)));
 
         response.andExpect(status().isCreated());
+    }
+
+    @Test
+    void testRegisterUser_EmailAlreadyExists() throws Exception {
+        RegisterRequest registerRequest = new RegisterRequest(
+                "Jane",
+                "Doe",
+                "janedoe@example.com",
+                "password"
+        );
+
+
+        ResultActions response = mockMvc
+                .perform(post("/api/member/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(registerRequest)));
+
+        response.andExpect(status().isBadRequest());
     }
 }
