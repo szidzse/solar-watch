@@ -103,7 +103,7 @@ public class SunriseSunsetService {
         return sunriseSunsetRepository.save(sunriseSunset);
     }
 
-    private LocalTime convertToLocalTime(String timeStr) {
+    LocalTime convertToLocalTime(String timeStr) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:mm:ss a");
         return LocalTime.parse(timeStr, formatter);
     }
