@@ -39,6 +39,15 @@ public class City {
     @OneToMany(mappedBy = "city", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SunriseSunset> sunriseSunsetList = new ArrayList<>();
 
+    public City(Long id, String name, String state, String country, BigDecimal longitude, BigDecimal latitude) {
+        this.id = id;
+        this.name = name;
+        this.state = state;
+        this.country = country;
+        this.longitude = longitude;
+        this.latitude = latitude;
+    }
+
     public void addSunriseSunset(SunriseSunset sunriseSunset) {
         sunriseSunsetList.add(sunriseSunset);
         sunriseSunset.setCity(this);
