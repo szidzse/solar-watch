@@ -1,0 +1,32 @@
+services:
+  frontend:
+    build: ./frontend
+    environment:
+      - HOSTNAME=backend
+    ports:
+      - 5173:5173
+    depends_on:
+      - backend
+  backend:
+    build: ./backend
+    environment:
+      DATASOURCE-PASSWORD: postgres
+      DATASOURCE-URL: jdbc:postgresql://db:5432/solar-watch
+      DATASOURCE-USERNAME: postgres
+      GEOCODING-API-KEY: d5f6786711761d6b846ea4dee00566cb
+      GEOCODING-API-URL: http://api.openweathermap.org/geo/1.0/direct
+      SECRET-KEY: 70a01a660c7169e00d976b7a1b6730446ea5a00020e259145e1df5d6c04e324c
+      SUNRISE-SUNSET-API-URL: https://api.sunrisesunset.io/json
+    depends_on:
+      - db
+  db:
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    image: postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=solar-watch
+volumes:
+  db-data:
+    driver: local
